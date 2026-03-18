@@ -7,6 +7,6 @@ from flask_mail import Mail
 from dotenv import load_dotenv
 import os
 import redis
-from celery import Celery
+
 
 load_dotenv()
