@@ -1,0 +1,15 @@
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.0.5
+Flask-Migrate==4.0.4
+Flask-JWT-Extended==4.5.2
+Flask-Mail==0.9.1
+psycopg2-binary==2.9.7
+python-dotenv==1.0.0
+Werkzeug==2.3.7
+Pillow==10.0.0
+boto3==1.28.28
+redis==5.0.0
+celery==5.3.1
+twilio==8.5.0
+python-dotenv==1.0.0
