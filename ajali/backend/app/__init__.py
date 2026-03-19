@@ -52,3 +52,6 @@ def create_app(config_class=None):
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(incidents_bp, url_prefix='/api/incidents')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
+
+ # Create upload directory
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
