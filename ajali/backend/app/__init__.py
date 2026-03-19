@@ -10,3 +10,9 @@ import redis
 
 
 load_dotenv()
+
+db = SQLAlchemy()
+migrate = Migrate()
+jwt = JWTManager()
+mail = Mail()
+celery = Celery(__name__, broker=os.getenv('REDIS_URL', 'redis://localhost:6379/0'))
