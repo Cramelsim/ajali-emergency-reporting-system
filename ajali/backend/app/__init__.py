@@ -48,3 +48,7 @@ def create_app(config_class=None):
     from app.routes.auth import auth_bp
     from app.routes.incidents import incidents_bp
     from app.routes.admin import admin_b
+
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(incidents_bp, url_prefix='/api/incidents')
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
