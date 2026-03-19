@@ -36,3 +36,10 @@ def create_app(config_class=None):
     # File upload configuration
     app.config['UPLOAD_FOLDER'] = 'uploads'
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+     # Initialize extensions
+    CORS(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    mail.init_app(app)
