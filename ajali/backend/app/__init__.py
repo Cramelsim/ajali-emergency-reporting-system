@@ -16,3 +16,6 @@ migrate = Migrate()
 jwt = JWTManager()
 mail = Mail()
 celery = Celery(__name__, broker=os.getenv('REDIS_URL', 'redis://localhost:6379/0'))
+
+def create_app(config_class=None):
+    app = Flask(__name__)
