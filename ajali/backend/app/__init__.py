@@ -55,3 +55,5 @@ def create_app(config_class=None):
 
  # Create upload directory
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    return app
