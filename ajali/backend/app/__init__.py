@@ -19,3 +19,9 @@ celery = Celery(__name__, broker=os.getenv('REDIS_URL', 'redis://localhost:6379/
 
 def create_app(config_class=None):
     app = Flask(__name__)
+
+    # Configuration
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://localhost/ajali')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key')
