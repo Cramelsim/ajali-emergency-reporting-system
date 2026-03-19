@@ -43,3 +43,8 @@ def create_app(config_class=None):
     migrate.init_app(app, db)
     jwt.init_app(app)
     mail.init_app(app)
+
+     # Register blueprints
+    from app.routes.auth import auth_bp
+    from app.routes.incidents import incidents_bp
+    from app.routes.admin import admin_b
