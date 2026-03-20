@@ -16,7 +16,7 @@ class User(db.Model):
     
     incidents = db.relationship('Incident', backref='author', lazy=True)
     
-        def to_dict(self):
+    def to_dict(self):
         return {
             'id': self.id,
             'email': self.email,
@@ -44,8 +44,8 @@ class Incident(db.Model):
     
     media_files = db.relationship('MediaFile', backref='incident', lazy=True, cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='incident', lazy=True, cascade='all, delete-orphan')
-
-def to_dict(self):
+    
+    def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
@@ -73,6 +73,7 @@ class MediaFile(db.Model):
     file_type = db.Column(db.String(10))  # 'image' or 'video'
     file_url = db.Column(db.String(500), nullable=False)
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
     def to_dict(self):
         return {
             'id': self.id,
@@ -80,7 +81,7 @@ class MediaFile(db.Model):
             'file_url': self.file_url,
             'uploaded_at': self.uploaded_at.isoformat() if self.uploaded_at else None
         }
-    
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     
@@ -91,8 +92,8 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User')
-
-     def to_dict(self):
+    
+    def to_dict(self):
         return {
             'id': self.id,
             'content': self.content,
@@ -100,8 +101,8 @@ class Comment(db.Model):
             'username': self.user.username if self.user else None,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
-    
-    class Notification(db.Model):
+
+class Notification(db.Model):
     __tablename__ = 'notifications'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -113,3 +114,12 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type': self.type,
+            'message': self.message,
+            'is_read': self.is_read,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
