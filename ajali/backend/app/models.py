@@ -16,3 +16,12 @@ class User(db.Model):
     
     incidents = db.relationship('Incident', backref='author', lazy=True)
     
+        def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'phone_number': self.phone_number,
+            'is_admin': self.is_admin,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
