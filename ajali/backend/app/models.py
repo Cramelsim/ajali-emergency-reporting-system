@@ -80,3 +80,14 @@ class MediaFile(db.Model):
             'file_url': self.file_url,
             'uploaded_at': self.uploaded_at.isoformat() if self.uploaded_at else None
         }
+    
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incidents.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User')
