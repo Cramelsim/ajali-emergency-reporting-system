@@ -73,3 +73,10 @@ class MediaFile(db.Model):
     file_type = db.Column(db.String(10))  # 'image' or 'video'
     file_url = db.Column(db.String(500), nullable=False)
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'file_type': self.file_type,
+            'file_url': self.file_url,
+            'uploaded_at': self.uploaded_at.isoformat() if self.uploaded_at else None
+        }
