@@ -64,3 +64,12 @@ def to_dict(self):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'media_files': [media.to_dict() for media in self.media_files]
         }
+
+class MediaFile(db.Model):
+    __tablename__ = 'media_files'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incidents.id'), nullable=False)
+    file_type = db.Column(db.String(10))  # 'image' or 'video'
+    file_url = db.Column(db.String(500), nullable=False)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
