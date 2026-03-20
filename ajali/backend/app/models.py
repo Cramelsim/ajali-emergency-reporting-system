@@ -44,3 +44,23 @@ class Incident(db.Model):
     
     media_files = db.relationship('MediaFile', backref='incident', lazy=True, cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='incident', lazy=True, cascade='all, delete-orphan')
+
+def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'incident_type': self.incident_type,
+            'status': self.status,
+            'location': {
+                'latitude': self.latitude,
+                'longitude': self.longitude,
+                'address': self.location_address
+            },
+            'severity': self.severity,
+            'user_id': self.user_id,
+            'author': self.author.username if self.author else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'media_files': [media.to_dict() for media in self.media_files]
+        }
