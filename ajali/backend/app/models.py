@@ -25,3 +25,22 @@ class User(db.Model):
             'is_admin': self.is_admin,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+class Incident(db.Model):
+    __tablename__ = 'incidents'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    incident_type = db.Column(db.String(50), nullable=False)  # 'accident', 'fire', 'crime', etc.
+    status = db.Column(db.String(50), default='pending')  # pending, under_investigation, rejected, resolved
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    location_address = db.Column(db.String(500))
+    severity = db.Column(db.String(50))  # low, medium, high, critical
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    media_files = db.relationship('MediaFile', backref='incident', lazy=True, cascade='all, delete-orphan')
+    comments = db.relationship('Comment', backref='incident', lazy=True, cascade='all, delete-orphan')
