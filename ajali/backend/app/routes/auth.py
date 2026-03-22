@@ -54,3 +54,9 @@ def register():
         
         db.session.add(new_user)
         db.session.commit()
+
+         # Create access token
+        access_token = create_access_token(
+            identity=new_user.id,
+            expires_delta=timedelta(days=1)
+        )
