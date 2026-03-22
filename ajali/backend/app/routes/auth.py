@@ -35,3 +35,10 @@ def register():
         # Validate phone if provided
         if data.get('phone_number') and not validate_phone(data['phone_number']):
             return jsonify({'error': 'Invalid phone number format'}), 400
+
+          # Check if user already exists
+        if User.query.filter_by(email=data['email']).first():
+            return jsonify({'error': 'Email already registered'}), 409
+        
+        if User.query.filter_by(username=data['username']).first():
+            return jsonify({'error': 'Username already taken'}), 409
