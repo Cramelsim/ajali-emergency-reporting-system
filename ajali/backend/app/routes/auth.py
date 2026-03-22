@@ -42,3 +42,15 @@ def register():
         
         if User.query.filter_by(username=data['username']).first():
             return jsonify({'error': 'Username already taken'}), 409
+        
+        # Create new user
+        hashed_password = generate_password_hash(data['password'])
+        new_user = User(
+            email=data['email'],
+            username=data['username'],
+            password_hash=hashed_password,
+            phone_number=data.get('phone_number')
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
