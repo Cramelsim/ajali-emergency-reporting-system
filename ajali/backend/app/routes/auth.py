@@ -7,3 +7,7 @@ from datetime import timedelta
 import re
 
 auth_bp = Blueprint('auth', __name__)
+
+def validate_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email) is not None
