@@ -15,3 +15,8 @@ def validate_email(email):
 def validate_phone(phone):
     pattern = r'^\+?1?\d{9,15}$'
     return re.match(pattern, phone) is not None
+
+@auth_bp.route('/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
