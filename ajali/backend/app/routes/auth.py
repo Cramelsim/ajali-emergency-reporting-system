@@ -66,3 +66,8 @@ def register():
             'access_token': access_token,
             'user': new_user.to_dict()
         }), 201
+    
+     except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+    
