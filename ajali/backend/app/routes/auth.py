@@ -60,3 +60,9 @@ def register():
             identity=new_user.id,
             expires_delta=timedelta(days=1)
         )
+
+                return jsonify({
+            'message': 'User created successfully',
+            'access_token': access_token,
+            'user': new_user.to_dict()
+        }), 201
