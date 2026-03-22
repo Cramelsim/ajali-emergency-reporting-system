@@ -27,3 +27,7 @@ def register():
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 40
+            
+            # Validate email
+        if not validate_email(data['email']):
+            return jsonify({'error': 'Invalid email format'}), 400 
