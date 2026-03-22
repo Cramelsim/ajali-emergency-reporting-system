@@ -31,3 +31,7 @@ def register():
             # Validate email
         if not validate_email(data['email']):
             return jsonify({'error': 'Invalid email format'}), 400 
+        
+        # Validate phone if provided
+        if data.get('phone_number') and not validate_phone(data['phone_number']):
+            return jsonify({'error': 'Invalid phone number format'}), 400
