@@ -5,3 +5,5 @@ from app import db
 from app.models import User
 from datetime import timedelta
 import re
+
+auth_bp = Blueprint('auth', __name__)
