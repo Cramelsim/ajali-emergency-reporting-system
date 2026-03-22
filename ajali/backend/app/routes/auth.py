@@ -20,3 +20,10 @@ def validate_phone(phone):
 def register():
     try:
         data = request.get_json()
+
+    
+    # Validate required fields
+        required_fields = ['email', 'username', 'password']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 40
