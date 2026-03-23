@@ -115,3 +115,15 @@ def get_profile():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    @auth_bp.route('/profile', methods=['PUT'])
+@jwt_required()
+def update_profile():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        data = request.get_json()
