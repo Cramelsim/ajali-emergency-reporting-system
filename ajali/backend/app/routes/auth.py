@@ -127,3 +127,23 @@ def update_profile():
             return jsonify({'error': 'User not found'}), 404
         
         data = request.get_json()
+
+         # Update fields
+        if data.get('username'):
+            # Check if username is taken
+            existing = User.query.filter_by(username=data['username']).first()
+            if existing and existing.id != user_id:
+                return jsonify({'error': 'Username already taken'}), 409
+            user.username = data['username']
+        
+        if data.get('phone_number'):
+            if not validate_phone(data['phone_number']):
+                return jsonify({'error': 'Invalid phone number format'}), 400
+            user.phone_number = data['phone_number']
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Profile updated successfully',
+            'user': user.to_dict()
+        }), 200
