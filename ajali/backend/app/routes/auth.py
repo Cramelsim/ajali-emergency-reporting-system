@@ -100,3 +100,18 @@ def login():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+    @auth_bp.route('/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        return jsonify({'user': user.to_dict()}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
