@@ -20,23 +20,22 @@ def validate_phone(phone):
 def register():
     try:
         data = request.get_json()
-
-    
-    # Validate required fields
+        
+        # Validate required fields
         required_fields = ['email', 'username', 'password']
         for field in required_fields:
             if field not in data:
-                return jsonify({'error': f'Missing required field: {field}'}), 40
-            
-            # Validate email
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Validate email
         if not validate_email(data['email']):
-            return jsonify({'error': 'Invalid email format'}), 400 
+            return jsonify({'error': 'Invalid email format'}), 400
         
         # Validate phone if provided
         if data.get('phone_number') and not validate_phone(data['phone_number']):
             return jsonify({'error': 'Invalid phone number format'}), 400
-
-          # Check if user already exists
+        
+        # Check if user already exists
         if User.query.filter_by(email=data['email']).first():
             return jsonify({'error': 'Email already registered'}), 409
         
@@ -54,25 +53,24 @@ def register():
         
         db.session.add(new_user)
         db.session.commit()
-
-         # Create access token
+        
+        # Create access token
         access_token = create_access_token(
             identity=new_user.id,
             expires_delta=timedelta(days=1)
         )
-
+        
         return jsonify({
             'message': 'User created successfully',
             'access_token': access_token,
             'user': new_user.to_dict()
         }), 201
-    
-except Exception as e:
-    db.session.rollback()
-    return jsonify({'error': str(e)}), 500
-     
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
-     @auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     try:
         data = request.get_json()
@@ -80,7 +78,7 @@ def login():
         if not data.get('email') or not data.get('password'):
             return jsonify({'error': 'Email and password required'}), 400
         
-           # Find user by email
+        # Find user by email
         user = User.query.filter_by(email=data['email']).first()
         
         if not user or not check_password_hash(user.password_hash, data['password']):
@@ -101,7 +99,7 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    @auth_bp.route('/profile', methods=['GET'])
+@auth_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
     try:
@@ -115,8 +113,8 @@ def get_profile():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    @auth_bp.route('/profile', methods=['PUT'])
+
+@auth_bp.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
     try:
@@ -127,8 +125,8 @@ def update_profile():
             return jsonify({'error': 'User not found'}), 404
         
         data = request.get_json()
-
-         # Update fields
+        
+        # Update fields
         if data.get('username'):
             # Check if username is taken
             existing = User.query.filter_by(username=data['username']).first()
@@ -147,3 +145,7 @@ def update_profile():
             'message': 'Profile updated successfully',
             'user': user.to_dict()
         }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
