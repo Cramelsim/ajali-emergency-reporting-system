@@ -61,13 +61,21 @@ def register():
             expires_delta=timedelta(days=1)
         )
 
-                return jsonify({
+        return jsonify({
             'message': 'User created successfully',
             'access_token': access_token,
             'user': new_user.to_dict()
         }), 201
     
-     except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
-    
+except Exception as e:
+    db.session.rollback()
+    return jsonify({'error': str(e)}), 500
+     
+
+     @auth_bp.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        
+        if not data.get('email') or not data.get('password'):
+            return jsonify({'error': 'Email and password required'}), 400
