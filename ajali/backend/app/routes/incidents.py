@@ -7,3 +7,5 @@ from app.utils.decorators import validate_incident_ownership
 import os
 from datetime import datetime
 import uuid
+
+incidents_bp = Blueprint('incidents', __name__)
