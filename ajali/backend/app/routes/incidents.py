@@ -13,4 +13,5 @@ incidents_bp = Blueprint('incidents', __name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
 MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
 
-d
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
