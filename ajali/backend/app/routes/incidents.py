@@ -9,3 +9,6 @@ from datetime import datetime
 import uuid
 
 incidents_bp = Blueprint('incidents', __name__)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
