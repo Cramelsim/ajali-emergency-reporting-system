@@ -15,3 +15,16 @@ MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    incidents_bp.route('/', methods=['POST'])
+@jwt_required()
+def create_incident():
+    try:
+        user_id = get_jwt_identity()
+        data = request.form
+        
+        # Validate required fields
+        required_fields = ['title', 'description', 'incident_type', 'latitude', 'longitude']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
