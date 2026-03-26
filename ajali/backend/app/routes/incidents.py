@@ -43,3 +43,40 @@ def create_incident():
         
         db.session.add(incident)
         db.session.flush()  # Get incident ID
+
+        # Handle file uploads
+        files = request.files.getlist('media')
+        for file in files:
+            if file and allowed_file(file.filename):
+                if file.content_length and file.content_length > MAX_FILE_SIZE:
+                    return jsonify({'error': f'File {file.filename} exceeds size limit'}), 400
+                
+                # Generate unique filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{uuid.uuid4()}.{ext}"
+                
+                # Determine file type
+                file_type = 'image' if ext in {'png', 'jpg', 'jpeg', 'gif'} else 'video'
+                
+                # Save file
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                
+                # Create media record
+                media = MediaFile(
+                    incident_id=incident.id,
+                    file_type=file_type,
+                    file_url=f"/uploads/{filename}"
+                )
+                db.session.add(media)
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Incident created successfully',
+            'incident': incident.to_dict()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
