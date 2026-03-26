@@ -16,7 +16,7 @@ MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-    incidents_bp.route('/', methods=['POST'])
+@incidents_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_incident():
     try:
@@ -28,8 +28,8 @@ def create_incident():
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
-            
-            # Create incident
+        
+        # Create incident
         incident = Incident(
             title=data['title'],
             description=data['description'],
@@ -43,7 +43,7 @@ def create_incident():
         
         db.session.add(incident)
         db.session.flush()  # Get incident ID
-
+        
         # Handle file uploads
         files = request.files.getlist('media')
         for file in files:
@@ -71,7 +71,6 @@ def create_incident():
                 db.session.add(media)
         
         db.session.commit()
-
         
         return jsonify({
             'message': 'Incident created successfully',
@@ -81,8 +80,8 @@ def create_incident():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/', methods=['GET'])
+
+@incidents_bp.route('/', methods=['GET'])
 def get_incidents():
     try:
         # Query parameters for filtering
@@ -102,4 +101,30 @@ def get_incidents():
             query = query.filter_by(incident_type=incident_type)
         
         if severity:
-            query = query.filter_by(severity=severity
+            query = query.filter_by(severity=severity)
+        
+        # Filter by location if coordinates provided
+        if lat and lng:
+            # Simple bounding box filter (for demo purposes)
+            # In production, use PostGIS for proper geospatial queries
+            lat = float(lat)
+            lng = float(lng)
+            radius = float(radius)
+            
+            # Approximate conversion: 1 degree latitude = 111 km
+            lat_delta = radius / 111
+            lng_delta = radius / (111 * abs(math.cos(math.radians(lat))) + 0.01)
+            
+            query = query.filter(
+                Incident.latitude.between(lat - lat_delta, lat + lat_delta),
+                Incident.longitude.between(lng - lng_delta, lng + lng_delta)
+            )
+        
+        incidents = query.order_by(Incident.created_at.desc()).all()
+        
+        return jsonify({
+            'incidents': [incident.to_dict() for incident in incidents]
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
