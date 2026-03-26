@@ -71,6 +71,7 @@ def create_incident():
                 db.session.add(media)
         
         db.session.commit()
+
         
         return jsonify({
             'message': 'Incident created successfully',
@@ -80,3 +81,25 @@ def create_incident():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/', methods=['GET'])
+def get_incidents():
+    try:
+        # Query parameters for filtering
+        status = request.args.get('status')
+        incident_type = request.args.get('type')
+        severity = request.args.get('severity')
+        lat = request.args.get('lat')
+        lng = request.args.get('lng')
+        radius = request.args.get('radius', 10)  # Radius in km
+        
+        query = Incident.query
+        
+        if status:
+            query = query.filter_by(status=status)
+        
+        if incident_type:
+            query = query.filter_by(incident_type=incident_type)
+        
+        if severity:
+            query = query.filter_by(severity=severity
