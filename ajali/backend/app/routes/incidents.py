@@ -28,3 +28,18 @@ def create_incident():
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
+            
+            # Create incident
+        incident = Incident(
+            title=data['title'],
+            description=data['description'],
+            incident_type=data['incident_type'],
+            latitude=float(data['latitude']),
+            longitude=float(data['longitude']),
+            location_address=data.get('location_address'),
+            severity=data.get('severity', 'medium'),
+            user_id=user_id
+        )
+        
+        db.session.add(incident)
+        db.session.flush()  # Get incident ID
