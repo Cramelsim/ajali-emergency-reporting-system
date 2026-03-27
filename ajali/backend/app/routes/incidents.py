@@ -191,3 +191,54 @@ def delete_incident(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/<int:incident_id>/media', methods=['POST'])
+@jwt_required()
+@validate_incident_ownership
+def add_media(incident_id):
+    try:
+        incident = Incident.query.get(incident_id)
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'File type not allowed'}), 400
+        
+        if file.content_length and file.content_length > MAX_FILE_SIZE:
+            return jsonify({'error': 'File exceeds size limit'}), 400
+        
+        # Generate unique filename
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"{uuid.uuid4()}.{ext}"
+        
+        # Determine file type
+        file_type = 'image' if ext in {'png', 'jpg', 'jpeg', 'gif'} else 'video'
+        
+        # Save file
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Create media record
+        media = MediaFile(
+            incident_id=incident.id,
+            file_type=file_type,
+            file_url=f"/uploads/{filename}"
+        )
+        
+        db.session.add(media)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Media added successfully',
+            'media': media.to_dict()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
