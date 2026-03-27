@@ -168,3 +168,26 @@ def update_incident(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/<int:incident_id>', methods=['DELETE'])
+@jwt_required()
+@validate_incident_ownership
+def delete_incident(incident_id):
+    try:
+        incident = Incident.query.get(incident_id)
+        
+        # Delete associated media files
+        for media in incident.media_files:
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 
+                                    os.path.basename(media.file_url))
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
+        db.session.delete(incident)
+        db.session.commit()
+        
+        return jsonify({'message': 'Incident deleted successfully'}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
