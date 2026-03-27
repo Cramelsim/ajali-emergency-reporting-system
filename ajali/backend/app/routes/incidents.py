@@ -128,7 +128,8 @@ def get_incidents():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    @incidents_bp.route('/<int:incident_id>', methods=['GET'])
+
+@incidents_bp.route('/<int:incident_id>', methods=['GET'])
 def get_incident(incident_id):
     try:
         incident = Incident.query.get(incident_id)
@@ -140,8 +141,8 @@ def get_incident(incident_id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/<int:incident_id>', methods=['PUT'])
+
+@incidents_bp.route('/<int:incident_id>', methods=['PUT'])
 @jwt_required()
 @validate_incident_ownership
 def update_incident(incident_id):
@@ -168,8 +169,8 @@ def update_incident(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/<int:incident_id>', methods=['DELETE'])
+
+@incidents_bp.route('/<int:incident_id>', methods=['DELETE'])
 @jwt_required()
 @validate_incident_ownership
 def delete_incident(incident_id):
@@ -191,8 +192,8 @@ def delete_incident(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/<int:incident_id>/media', methods=['POST'])
+
+@incidents_bp.route('/<int:incident_id>/media', methods=['POST'])
 @jwt_required()
 @validate_incident_ownership
 def add_media(incident_id):
@@ -242,8 +243,8 @@ def add_media(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/media/<int:media_id>', methods=['DELETE'])
+
+@incidents_bp.route('/media/<int:media_id>', methods=['DELETE'])
 @jwt_required()
 def delete_media(media_id):
     try:
@@ -271,8 +272,8 @@ def delete_media(media_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
-    @incidents_bp.route('/user/me', methods=['GET'])
+
+@incidents_bp.route('/user/me', methods=['GET'])
 @jwt_required()
 def get_user_incidents():
     try:
