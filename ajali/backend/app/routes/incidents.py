@@ -128,3 +128,15 @@ def get_incidents():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    @incidents_bp.route('/<int:incident_id>', methods=['GET'])
+def get_incident(incident_id):
+    try:
+        incident = Incident.query.get(incident_id)
+        
+        if not incident:
+            return jsonify({'error': 'Incident not found'}), 404
+        
+        return jsonify({'incident': incident.to_dict()}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
