@@ -271,3 +271,17 @@ def delete_media(media_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/user/me', methods=['GET'])
+@jwt_required()
+def get_user_incidents():
+    try:
+        user_id = get_jwt_identity()
+        incidents = Incident.query.filter_by(user_id=user_id).order_by(Incident.created_at.desc()).all()
+        
+        return jsonify({
+            'incidents': [incident.to_dict() for incident in incidents]
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
