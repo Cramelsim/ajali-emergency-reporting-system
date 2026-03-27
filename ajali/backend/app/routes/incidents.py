@@ -140,3 +140,31 @@ def get_incident(incident_id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/<int:incident_id>', methods=['PUT'])
+@jwt_required()
+@validate_incident_ownership
+def update_incident(incident_id):
+    try:
+        incident = Incident.query.get(incident_id)
+        data = request.get_json()
+        
+        # Update fields
+        updatable_fields = ['title', 'description', 'incident_type', 'latitude', 
+                           'longitude', 'location_address', 'severity']
+        
+        for field in updatable_fields:
+            if field in data:
+                setattr(incident, field, data[field])
+        
+        incident.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Incident updated successfully',
+            'incident': incident.to_dict()
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
