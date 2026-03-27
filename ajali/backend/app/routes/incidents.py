@@ -242,3 +242,32 @@ def add_media(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+    @incidents_bp.route('/media/<int:media_id>', methods=['DELETE'])
+@jwt_required()
+def delete_media(media_id):
+    try:
+        user_id = get_jwt_identity()
+        media = MediaFile.query.get(media_id)
+        
+        if not media:
+            return jsonify({'error': 'Media not found'}), 404
+        
+        # Check if user owns the incident
+        if media.incident.user_id != user_id:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        # Delete file
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 
+                                os.path.basename(media.file_url))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        db.session.delete(media)
+        db.session.commit()
+        
+        return jsonify({'message': 'Media deleted successfully'}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
