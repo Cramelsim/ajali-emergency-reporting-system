@@ -118,3 +118,13 @@ def get_users():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@celery.task
+def send_status_notifications(incident_id, old_status, new_status):
+    """Send email and SMS notifications about status change"""
+    try:
+        incident = Incident.query.get(incident_id)
+        if not incident or not incident.author:
+            return
+        
+        user = incident.author
