@@ -42,3 +42,38 @@ def get_all_incidents():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+@admin_bp.route('/incidents/<int:incident_id>/status', methods=['PUT'])
+@jwt_required()
+@admin_required
+def update_incident_status(incident_id):
+    try:
+        incident = Incident.query.get(incident_id)
+        
+        if not incident:
+            return jsonify({'error': 'Incident not found'}), 404
+        
+        data = request.get_json()
+        new_status = data.get('status')
+        
+        valid_statuses = ['pending', 'under_investigation', 'rejected', 'resolved']
+        if new_status not in valid_statuses:
+            return jsonify({'error': 'Invalid status'}), 400
+        
+        old_status = incident.status
+        incident.status = new_status
+        incident.updated_at = datetime.utcnow()
+        
+        db.session.commit()
+        
+        # Send notifications asynchronously
+        if new_status != old_status:
+            send_status_notifications.delay(incident_id, old_status, new_status)
+        
+        return jsonify({
+            'message': 'Incident status updated successfully',
+            'incident': incident.to_dict()
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
