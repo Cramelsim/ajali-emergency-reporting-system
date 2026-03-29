@@ -42,6 +42,7 @@ def get_all_incidents():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 @admin_bp.route('/incidents/<int:incident_id>/status', methods=['PUT'])
 @jwt_required()
 @admin_required
@@ -77,7 +78,7 @@ def update_incident_status(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
+
 @admin_bp.route('/incidents/stats', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -118,7 +119,7 @@ def get_users():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @celery.task
 def send_status_notifications(incident_id, old_status, new_status):
     """Send email and SMS notifications about status change"""
@@ -128,11 +129,24 @@ def send_status_notifications(incident_id, old_status, new_status):
             return
         
         user = incident.author
-
-         # Send email if user has email
+        
+        # Send email if user has email
         if user.email:
             send_status_update_email(user.email, incident, old_status, new_status)
-
+        
         # Send SMS if user has phone number
         if user.phone_number:
             send_status_update_sms(user.phone_number, incident, old_status, new_status)
+        
+        # Create notification record
+        notification = Notification(
+            user_id=user.id,
+            incident_id=incident.id,
+            type='both',
+            message=f'Your incident "{incident.title}" status changed from {old_status} to {new_status}'
+        )
+        db.session.add(notification)
+        db.session.commit()
+        
+    except Exception as e:
+        print(f"Error sending notifications: {str(e)}")
