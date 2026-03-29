@@ -77,3 +77,31 @@ def update_incident_status(incident_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+@admin_bp.route('/incidents/stats', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_incident_stats():
+    try:
+        total_incidents = Incident.query.count()
+        pending = Incident.query.filter_by(status='pending').count()
+        under_investigation = Incident.query.filter_by(status='under_investigation').count()
+        resolved = Incident.query.filter_by(status='resolved').count()
+        rejected = Incident.query.filter_by(status='rejected').count()
+        
+        # Incidents by type
+        incidents_by_type = db.session.query(
+            Incident.incident_type, db.func.count(Incident.id)
+        ).group_by(Incident.incident_type).all()
+        
+        return jsonify({
+            'total': total_incidents,
+            'pending': pending,
+            'under_investigation': under_investigation,
+            'resolved': resolved,
+            'rejected': rejected,
+            'by_type': dict(incidents_by_type)
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
