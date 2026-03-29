@@ -132,3 +132,7 @@ def send_status_notifications(incident_id, old_status, new_status):
          # Send email if user has email
         if user.email:
             send_status_update_email(user.email, incident, old_status, new_status)
+
+        # Send SMS if user has phone number
+        if user.phone_number:
+            send_status_update_sms(user.phone_number, incident, old_status, new_status)
