@@ -105,3 +105,16 @@ def get_incident_stats():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@admin_bp.route('/users', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_users():
+    try:
+        users = User.query.all()
+        return jsonify({
+            'users': [user.to_dict() for user in users]
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
