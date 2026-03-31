@@ -20,11 +20,17 @@ def validate_incident_ownership(f):
     def decorated_function(*args, **kwargs):
         user_id = get_jwt_identity()
         incident_id = kwargs.get('incident_id')
-                if not incident_id:
+        
+        if not incident_id:
             return jsonify({'error': 'Incident ID required'}), 400
         
         incident = Incident.query.get(incident_id)
+        
         if not incident:
             return jsonify({'error': 'Incident not found'}), 404
-         if incident.user_id != user_id:
+        
+        if incident.user_id != user_id:
             return jsonify({'error': 'You do not have permission to modify this incident'}), 403
+        
+        return f(*args, **kwargs)
+    return decorated_function
