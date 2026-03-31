@@ -14,3 +14,9 @@ def admin_required(f):
         
         return f(*args, **kwargs)
     return decorated_function
+
+def validate_incident_ownership(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_id = get_jwt_identity()
+        incident_id = kwargs.get('incident_id')
