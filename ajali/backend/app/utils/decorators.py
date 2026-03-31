@@ -26,3 +26,5 @@ def validate_incident_ownership(f):
         incident = Incident.query.get(incident_id)
         if not incident:
             return jsonify({'error': 'Incident not found'}), 404
+         if incident.user_id != user_id:
+            return jsonify({'error': 'You do not have permission to modify this incident'}), 403
