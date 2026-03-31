@@ -24,3 +24,5 @@ def validate_incident_ownership(f):
             return jsonify({'error': 'Incident ID required'}), 400
         
         incident = Incident.query.get(incident_id)
+        if not incident:
+            return jsonify({'error': 'Incident not found'}), 404
