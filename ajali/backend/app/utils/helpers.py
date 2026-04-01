@@ -46,26 +46,3 @@ def send_status_update_email(user_email, incident, old_status, new_status):
     except Exception as e:
         print(f"Error sending email: {str(e)}")
 
-def send_status_update_sms(phone_number, incident, old_status, new_status):
-    """Send SMS notification about status change"""
-    try:
-        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
-        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-        twilio_phone = os.getenv('TWILIO_PHONE_NUMBER')
-        
-        if not all([account_sid, auth_token, twilio_phone]):
-            print("Twilio credentials not configured")
-            return
-        
-        client = Client(account_sid, auth_token)
-        
-        message = f"Ajali! Update: Your incident '{incident.title[:30]}...' status changed from {old_status} to {new_status}"
-        
-        client.messages.create(
-            body=message,
-            from_=twilio_phone,
-            to=phone_number
-        )
-        
-    except Exception as e:
-        print(f"Error sending SMS: {str(e)}")
