@@ -23,3 +23,7 @@ body {
 .incident-marker {
   cursor: pointer;
 }
+
+.incident-marker:hover {
+  transform: scale(1.1);
+}
