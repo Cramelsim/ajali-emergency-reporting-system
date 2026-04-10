@@ -23,3 +23,7 @@ import AdminRoute from './components/AdminRoute';
 
 // Redux
 import { loadUser } from './redux/slices/authSlice';
+
+function App() {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
