@@ -20,3 +20,6 @@ import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+
+// Redux
+import { loadUser } from './redux/slices/authSlice';
