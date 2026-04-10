@@ -15,3 +15,8 @@ import CreateIncident from './pages/CreateIncident';
 import EditIncident from './pages/EditIncident';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
+
+// Components
+import Navbar from './components/Navbar';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
