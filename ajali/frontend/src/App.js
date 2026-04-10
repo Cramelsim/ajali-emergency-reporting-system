@@ -14,4 +14,4 @@ import IncidentDetail from './pages/IncidentDetail';
 import CreateIncident from './pages/CreateIncident';
 import EditIncident from './pages/EditIncident';
 import AdminDashboard from './pages/AdminDashboard';
-
+import Profile from './pages/Profile';
