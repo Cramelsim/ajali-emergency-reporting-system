@@ -55,3 +55,11 @@ function App() {
         <Route path="/incidents/:id" element={<IncidentDetail />} />
         
         <Route element={<PrivateRoute />}></Route>
+
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/create-incident" element={<CreateIncident />} />
+          <Route path="/edit-incident/:id" element={<EditIncident />} />
+        </Route>
+        
