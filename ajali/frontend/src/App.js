@@ -63,3 +63,10 @@ function App() {
           <Route path="/edit-incident/:id" element={<EditIncident />} />
         </Route>
         
+ <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
