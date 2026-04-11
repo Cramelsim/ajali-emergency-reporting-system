@@ -32,3 +32,26 @@ function App() {
       dispatch(loadUser());
     }
   }, [dispatch]);
+
+   return (
+    <>
+      <Navbar />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <Routes>
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" />} />
+        
+        <Route path="/" element={<IncidentList />} />
+        <Route path="/incidents/:id" element={<IncidentDetail />} />
+        
+        <Route element={<PrivateRoute />}></Route>
