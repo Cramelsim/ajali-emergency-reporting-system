@@ -27,3 +27,8 @@ import { loadUser } from './redux/slices/authSlice';
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      dispatch(loadUser());
+    }
+  }, [dispatch]);
