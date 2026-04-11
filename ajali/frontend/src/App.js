@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-i
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -27,13 +26,14 @@ import { loadUser } from './redux/slices/authSlice';
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
+
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
       dispatch(loadUser());
     }
   }, [dispatch]);
 
-   return (
+  return (
     <>
       <Navbar />
       <ToastContainer
@@ -54,8 +54,6 @@ function App() {
         <Route path="/" element={<IncidentList />} />
         <Route path="/incidents/:id" element={<IncidentDetail />} />
         
-        <Route element={<PrivateRoute />}></Route>
-
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
@@ -63,10 +61,12 @@ function App() {
           <Route path="/edit-incident/:id" element={<EditIncident />} />
         </Route>
         
- <Route element={<AdminRoute />}>
+        <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </>
   );
 }
+
+export default App;
