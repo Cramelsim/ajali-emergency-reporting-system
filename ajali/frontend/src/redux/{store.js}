@@ -1,0 +1,4 @@
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice';
+import incidentReducer from './slices/incidentSlice';
+import uiReducer from './slices/uiSlice';
