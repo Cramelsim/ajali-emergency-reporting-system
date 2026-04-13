@@ -33,19 +33,18 @@ export const register = createAsyncThunk(
   }
 );
 
-export const loadUser = createAsyncThunk(
-  'auth/loadUser',
-  async (_, { rejectWithValue }) => {
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (userData, { getState, rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(`${API_URL}/auth/profile`, {
+      const token = getState().auth.token;
+      const response = await axios.put(`${API_URL}/auth/profile`, userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      toast.success('Profile updated successfully');
       return response.data;
     } catch (error) {
-      localStorage.removeItem('access_token');
-      return rejectWithValue('Session expired');
+      return rejectWithValue(error.response?.data?.error || 'Update failed');
     }
   }
 );
-
