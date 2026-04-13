@@ -49,18 +49,3 @@ export const loadUser = createAsyncThunk(
   }
 );
 
-export const updateProfile = createAsyncThunk(
-  'auth/updateProfile',
-  async (userData, { getState, rejectWithValue }) => {
-    try {
-      const token = getState().auth.token;
-      const response = await axios.put(`${API_URL}/auth/profile`, userData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success('Profile updated successfully');
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || 'Update failed');
-    }
-  }
-);
