@@ -33,6 +33,23 @@ export const register = createAsyncThunk(
   }
 );
 
+export const loadUser = createAsyncThunk(
+  'auth/loadUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await axios.get(`${API_URL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      localStorage.removeItem('access_token');
+      return rejectWithValue('Session expired');
+    }
+  }
+);
+
+
 export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (userData, { getState, rejectWithValue }) => {
