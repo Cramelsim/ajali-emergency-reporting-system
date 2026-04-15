@@ -110,4 +110,11 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.access_token;
+        toast.success('Registration successful');
+      })
       
