@@ -6,7 +6,7 @@ backend/instance/
 backend/.env
 backend/uploads/
 
-# Frontend - Node modules (THIS IS WHAT YOU NEED)
+
 frontend/node_modules/
 frontend/node_modules/*
 frontend/package-lock.json
