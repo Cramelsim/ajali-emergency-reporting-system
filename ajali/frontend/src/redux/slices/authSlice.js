@@ -117,4 +117,9 @@ const authSlice = createSlice({
         state.token = action.payload.access_token;
         toast.success('Registration successful');
       })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
       
