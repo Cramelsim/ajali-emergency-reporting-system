@@ -74,4 +74,35 @@ const authSlice = createSlice({
     loading: false,
     error: null,
   },
-  
+  reducers: {
+    logout: (state) => {
+      localStorage.removeItem('access_token');
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      toast.info('Logged out successfully');
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Login
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.access_token;
+        toast.success('Login successful');
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+    
