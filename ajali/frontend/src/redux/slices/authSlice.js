@@ -138,4 +138,11 @@ const authSlice = createSlice({
         state.token = null;
       })
       // Update Profile
-     
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+      });
+  },
+});
+
+export const { logout, clearError } = authSlice.actions;
+export default authSlice.reducer;
