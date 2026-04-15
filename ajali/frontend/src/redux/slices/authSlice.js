@@ -122,4 +122,8 @@ const authSlice = createSlice({
         state.error = action.payload;
         toast.error(action.payload);
       })
-      
+      // Load User
+      .addCase(loadUser.pending, (state) => {
+        state.loading = true;
+      })
+     
