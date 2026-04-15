@@ -65,3 +65,13 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
+    user: null,
+    token: localStorage.getItem('access_token'),
+    isAuthenticated: false,
+    loading: false,
+    error: null,
+  },
+  
