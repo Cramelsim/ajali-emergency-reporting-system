@@ -28,3 +28,23 @@ export const fetchIncident = createAsyncThunk(
     }
   }
 );
+
+export const createIncident = createAsyncThunk(
+  'incidents/createIncident',
+  async (formData, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await axios.post(`${API_URL}/incidents/`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success('Incident reported successfully');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to create incident');
+    }
+  }
+);
+
