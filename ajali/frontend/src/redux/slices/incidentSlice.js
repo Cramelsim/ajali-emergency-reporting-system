@@ -16,3 +16,15 @@ export const fetchIncidents = createAsyncThunk(
     }
   }
 );
+
+export const fetchIncident = createAsyncThunk(
+  'incidents/fetchIncident',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/incidents/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to fetch incident');
+    }
+  }
+);
